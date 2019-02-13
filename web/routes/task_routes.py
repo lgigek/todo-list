@@ -7,6 +7,9 @@ import logging
 
 app = Flask(__name__)
 
+# Disable flask jsonify from sorting alphabetically
+app.config['JSON_SORT_KEYS'] = False
+
 
 @app.route('/add_task', methods=['POST'])
 def add_task():
