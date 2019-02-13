@@ -21,14 +21,18 @@ def add_task():
         logging.info('Incorrect parameters, task was not created')
         return jsonify({'Message': 'Incorrect parameters'}), 400
 
-    task = Task(request_json['name'], request_json['description'], request_json['status'])
+    task = Task(request_json['name'], request_json['description'], request_json['status'].lower())
     if task_service.is_registered(task):
         logging.info('There is a task with the same name, task was not created')
         return jsonify({'Message': 'Duplicated task'}), 400
-    else:
-        task_service.insert(task)
-        logging.info('Task created successful')
-        return jsonify({'name': task.name, 'description': task.description, 'status': task.status}), 201
+
+    if task.status not in Task.expected_status:
+        logging.info(f'Task with invalid status ({task.status}), task was not created')
+        return jsonify({'Message': "Invalid value in 'status' field. Please use 'to_do', 'doing' or 'done'"})
+
+    task_service.insert(task)
+    logging.info('Task created successful')
+    return jsonify({'name': task.name, 'description': task.description, 'status': task.status}), 201
 
 
 def _is_request_json_a_task(request_json):

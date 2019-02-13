@@ -51,4 +51,12 @@ Returns:
 {
     "Message": "Incorrect parameters"
 }
+```
+
+- HTTP 400 if "status" field id different from `to_do`, `doing` or `done`:
+
+```
+{
+  "Message": "Invalid value in 'status' field. Please use 'to_do', 'doing' or 'done'"
+}
 ``` 
