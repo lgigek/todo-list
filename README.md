@@ -11,9 +11,11 @@ This application uses docker compose. It is necessary to run the following comma
 The application will be running on port 5000 (it can be changed in `.env` file)
 
 ## Routes
-`/add_task`: HTTP route to create a new task
+All routes have the prefix `/task`. Example, to add a task, is necessary to make a request do `/task/add`.   
 
-### /add_task
+`/add`: HTTP route to create a new task
+
+### /add
 This route expects an POST with a Json that contains the task data.
 
 Json example:
