@@ -23,7 +23,7 @@ def add():
         logging.info('There is a task with the same name, task was not created')
         return jsonify({'Message': 'Duplicated task'}), 400
 
-    if new_task.status not in Task.expected_status:
+    if not _is_status_valid(new_task.status):
         logging.info(f'Task with invalid status ({new_task.status}), task was not created')
         return jsonify({'Message': "Invalid value in 'status' field. Please use 'to_do', 'doing' or 'done'"})
 
@@ -52,7 +52,7 @@ def get_by_status(status):
     logging.info(f'HTTP Request to get tasks by status with data: {request}')
     logging.info(f'Looking for tasks with status equal to "{status}"')
 
-    if status not in Task.expected_status:
+    if not _is_status_valid(status):
         logging.info(f'Invalid status value ({status})')
         return jsonify({'Message': "Invalid status. Please use 'to_do', 'doing' or 'done'"}), 400
 
@@ -95,3 +95,9 @@ def _is_request_json_a_task(request_json):
     if 'name' not in request_json or 'description' not in request_json or 'status' not in request_json:
         return False
     return True
+
+
+def _is_status_valid(status):
+    if status in Task.expected_status:
+        return True
+    return False
