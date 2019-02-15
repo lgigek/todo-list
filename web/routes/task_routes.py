@@ -19,7 +19,7 @@ def add():
         return jsonify({'Message': 'Incorrect parameters'}), 400
 
     new_task = Task(request_json['name'], request_json['description'], request_json['status'].lower())
-    if task_service.is_registered(new_task):
+    if task_service.is_registered(new_task.name):
         logging.info('There is a task with the same name, task was not created')
         return jsonify({'Message': 'Duplicated task'}), 400
 
@@ -89,6 +89,36 @@ def get_all():
                             'status': t['status']})
 
     return jsonify(return_list), 200
+
+
+@task.route('/update/<string:task_name>', methods=['PUT'])
+def update(task_name):
+    logging.info(f'HTTP Request to update a task with data: {request}')
+    request_json = request.get_json()
+    logging.info(f'HTTP Request to update task with name {task_name} with JSON: {request_json}')
+
+    if not task_service.is_registered(task_name):
+        logging.info('Task not found')
+        return jsonify({'Message': 'Task not found'}), 404
+
+    if not _is_request_json_a_task(request_json):
+        logging.info('Incorrect parameters')
+        return jsonify({'Message': 'Incorrect parameters'}), 400
+
+    task_with_new_values = Task(request_json['name'], request_json['description'], request_json['status'].lower())
+
+    if task_service.is_registered(task_with_new_values.name) and task_with_new_values.name != task_name:
+        logging.info('Task not updated, the name would be duplicated')
+        return jsonify({'Message': 'Task not updated, the name would be duplicated'}), 400
+
+    if not _is_status_valid(task_with_new_values.status):
+        logging.info('Invalid status')
+        return jsonify({'Message': "Invalid status. Please use 'to_do', 'doing' or 'done'"}), 400
+
+    task_service.update(task_name, task_with_new_values)
+    logging.info('Task updated')
+    return jsonify({'name': task_with_new_values.name, 'description': task_with_new_values.description,
+                    'status': task_with_new_values.status}), 200
 
 
 def _is_request_json_a_task(request_json):

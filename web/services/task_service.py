@@ -1,8 +1,8 @@
 from dbs.mongo import tasks
 
 
-def is_registered(task):
-    if tasks.find({'name': task.name}).count() > 0:
+def is_registered(task_name):
+    if tasks.find({'name': task_name}).count() > 0:
         return True
     else:
         return False
@@ -18,6 +18,11 @@ def get_by_status(status):
 
 def get_all():
     return list(tasks.find({}))
+
+
+def update(task_name, task):
+    tasks.update(
+        {'name': task_name}, {"$set": {'name': task.name, 'description': task.description, 'status': task.status}})
 
 
 def insert(task):
