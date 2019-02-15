@@ -14,17 +14,20 @@ The application will be running on port 5000 (it can be changed in `.env` file)
 All routes have the prefix `/task`. Example, to add a task, is necessary to make a request do `/task/add`.   
 
 `/add`: HTTP route to create a new task
+`/get_by_name/<task_name>`: HTTP route to get a task by its name
+`/get_by_status/<status>`: HTTP route to get tasks by its status
+`/get_all`: HTTP route to get all tasks 
 
 ### /add
-This route expects an POST with a Json that contains the task data.
+This route expects a POST with a Json that contains the task data.
 
 Json example:
 
 ```
 {
-    "name": "task_name",
-    "description": "task_description",
-    "status": "task_status"
+  "name": "task_name",
+  "description": "task_description",
+  "status": "task_status"
 } 
 ```
 
@@ -33,9 +36,9 @@ Returns:
 
 ```
 {
-    "description": "task_description",
-    "name": "task_name",
-    "status": "task_status"
+  "name": "task_name",
+  "description": "task_description",
+  "status": "task_status"
 }
 ```
 
@@ -43,7 +46,7 @@ Returns:
 
 ```
 {
-    "Message": "Task task_name was not created because it is already registered"
+  "Message": "Task task_name was not created because it is already registered"
 }
 ```
  
@@ -51,7 +54,7 @@ Returns:
 
 ```
 {
-    "Message": "Incorrect parameters"
+  "Message": "Incorrect parameters"
 }
 ```
 
@@ -61,4 +64,84 @@ Returns:
 {
   "Message": "Invalid value in 'status' field. Please use 'to_do', 'doing' or 'done'"
 }
-``` 
+```
+
+### /get_by_name/<task_name>
+This route expects a GET with the task name in path variable
+
+Returns: 
+- HTTP 200 if task was found:
+
+```
+{
+  "name": "task_name",
+  "description": "task_description",
+  "status": "task_status"
+}
+```
+
+- HTTP 404 if task was not found:
+
+```
+{
+  "Message": "Task not found"
+}
+```
+
+### /get_by_status/<status>
+This route expects a GET with the status in path variable
+
+Returns: 
+- HTTP 200 if tasks were found:
+
+```
+[
+  {
+    "name": "task_name",
+    "description": "task_description",
+    "status": "task_status"
+  }
+  ...
+]
+```
+
+- HTTP 400 if status is invalid:
+
+```
+{
+  "Message": "Invalid status. Please use 'to_do', 'doing' or 'done'"
+}
+```
+
+- HTTP 404 is there are no tasks with a valid status:
+
+```
+{
+  "Message": "Task not found"
+}
+```
+
+### /get_all
+This route expects a GET
+
+Returns: 
+- HTTP 200 if tasks were found:
+
+```
+[
+  {
+    "name": "task_name",
+    "description": "task_description",
+    "status": "task_status"
+  }
+  ...
+]
+```
+
+- HTTP 404 is there are no tasks with a valid status:
+
+```
+{
+  "Message": "Task not found"
+}
+```

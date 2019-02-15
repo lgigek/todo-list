@@ -8,5 +8,17 @@ def is_registered(task):
         return False
 
 
+def get_by_name(task_name):
+    return tasks.find_one({'name': task_name})
+
+
+def get_by_status(status):
+    return list(tasks.find({'status': status}))
+
+
+def get_all():
+    return list(tasks.find({}))
+
+
 def insert(task):
     tasks.insert_one(task.__dict__)

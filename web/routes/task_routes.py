@@ -9,7 +9,7 @@ task = Blueprint('task', __name__)
 
 
 @task.route('/add', methods=['POST'])
-def add_task():
+def add():
     logging.info(f'HTTP Request to add a new task with data: {request}')
     request_json = request.get_json()
     logging.info(f'HTTP Request to add a new task with JSON: {request_json}')
@@ -30,6 +30,65 @@ def add_task():
     task_service.insert(new_task)
     logging.info('Task created successful')
     return jsonify({'name': new_task.name, 'description': new_task.description, 'status': new_task.status}), 201
+
+
+@task.route('/get_by_name/<string:task_name>', methods=['GET'])
+def get_by_name(task_name):
+    logging.info(f'HTTP Request to get a task by name with data: {request}')
+    logging.info(f'Looking for a task with name equal to "{task_name}"')
+
+    task_found = task_service.get_by_name(task_name)
+    if task_found is None:
+        logging.info('Task not found')
+        return jsonify({'Message': 'Task not found'}), 404
+
+    logging.info('Task found, returning its data')
+    return jsonify({'name': task_found['name'], 'description': task_found['description'],
+                    'status': task_found['status']}), 200
+
+
+@task.route('/get_by_status/<string:status>', methods=['GET'])
+def get_by_status(status):
+    logging.info(f'HTTP Request to get tasks by status with data: {request}')
+    logging.info(f'Looking for tasks with status equal to "{status}"')
+
+    if status not in Task.expected_status:
+        logging.info(f'Invalid status value ({status})')
+        return jsonify({'Message': "Invalid status. Please use 'to_do', 'doing' or 'done'"}), 400
+
+    tasks_found = task_service.get_by_status(status)
+
+    if len(tasks_found) == 0:
+        logging.info('No tasks found')
+        return jsonify({'Message': 'Task not found'}), 404
+
+    logging.info('Returning tasks')
+    return_list = []
+    for t in tasks_found:
+        return_list.append({'name': t['name'], 'description': t['description'],
+                            'status': t['status']})
+
+    return jsonify(return_list), 200
+
+
+@task.route('/get_all', methods=['GET'])
+def get_all():
+    logging.info(f'HTTP Request to get all tasks with data: {request}')
+    logging.info('Returning all tasks')
+
+    tasks_found = task_service.get_all()
+
+    if len(tasks_found) == 0:
+        logging.info('No tasks found')
+        return jsonify({'Message': 'Task not found'}), 404
+
+    logging.info('Returning tasks')
+    return_list = []
+    for t in tasks_found:
+        return_list.append({'name': t['name'], 'description': t['description'],
+                            'status': t['status']})
+
+    return jsonify(return_list), 200
 
 
 def _is_request_json_a_task(request_json):
