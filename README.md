@@ -39,9 +39,7 @@ Returns:
 
 ```
 {
-  "name": "task_name",
-  "description": "task_description",
-  "status": "task_status"
+  "Message": "Task created"
 }
 ```
 
@@ -49,11 +47,11 @@ Returns:
 
 ```
 {
-  "Message": "Task task_name was not created because it is already registered"
+  "Message": "Duplicated task name"
 }
 ```
  
-- HTTP 400 if Json does not contains necessary fields:
+- HTTP 400 if Json does not contains necessary fields or if fields are empty:
 
 ```
 {
@@ -73,7 +71,7 @@ Returns:
 This route expects a HTTP GET
 
 Returns: 
-- HTTP 200 if tasks were found:
+- HTTP 200 with the tasks in a list:
 
 ```
 [
@@ -86,19 +84,11 @@ Returns:
 ]
 ```
 
-- HTTP 404 is there are no tasks with a valid status:
-
-```
-{
-  "Message": "Task not found"
-}
-```
-
 ### /get_by_status/<status>
 This route expects a HTTP GET with the status in path variable
 
 Returns: 
-- HTTP 200 if tasks were found:
+- HTTP 200 with the tasks in a list:
 
 ```
 [
@@ -116,14 +106,6 @@ Returns:
 ```
 {
   "Message": "Invalid status. Please use 'to_do', 'doing' or 'done'"
-}
-```
-
-- HTTP 404 is there are no tasks with a valid status:
-
-```
-{
-  "Message": "Task not found"
 }
 ```
 
@@ -160,4 +142,65 @@ Json example:
   "description": "task_description",
   "status": "task_status"
 } 
+```
+
+Returns:
+- HTTP 200 is task was updated:
+
+```
+{
+ "Message": "Task updated"
+} 
+```
+
+- HTTP 400 if task was not found:
+
+```
+{
+  "Message": "Task not found"
+}
+```
+
+- HTTP 400 if Json does not contains necessary fields or if fields are empty:
+
+```
+{
+  "Message": "Incorrect parameters"
+}
+```
+
+- HTTP 400 if there is a task with the new name:
+
+```
+{
+  "Message": "Duplicated task name"
+}
+```
+
+- HTTP 400 if "status" field id different from `to_do`, `doing` or `done`:
+
+```
+{
+  "Message": "Invalid status. Please use 'to_do', 'doing' or 'done'"
+}
+```
+
+### /delete/<task_name>
+This route expects a HTTP DELETE with the task name in path variable
+
+Returns:
+- HTTP 200 if deleted:
+
+```
+{
+  "Message": "Task deleted"
+}
+```
+
+- HTTP 404 if task was not found:
+
+```
+{
+  "Message": "Task not found"
+}
 ```
