@@ -11,16 +11,18 @@ This application uses docker compose. It is necessary to run the following comma
 The application will be running on port 5000 (it can be changed in `.env` file)
 
 ## Routes
-All routes have the prefix `/task`. Example, to add a task, is necessary to make a request do `/task/add`.   
+All routes have the prefix `/task`. So, for example, if it is necessary to make a request to `/add`, is necessary to 
+make a request to route `/task/add`.
 
-`/add`: HTTP route to create a new task
-`/get_by_name/<task_name>`: HTTP route to get a task by its name
-`/get_by_status/<status>`: HTTP route to get tasks by its status
-`/get_all`: HTTP route to get all tasks 
-`/update/<task_name>`: HTTP route to update a task by its name
+`/add`: route to create a new task
+`/get_all`: route to get all tasks 
+`/get_by_status/<status>`: route to get tasks by its status
+`/get_by_name/<task_name>`: route to get a task by its name
+`/update/<task_name>`: route to update a task by its name
+`/delete/<task_name>`: route do delete a task by its name
 
 ### /add
-This route expects a POST with a Json that contains the task data.
+This route expects a HTTP POST with a Json that contains the task data.
 
 Json example:
 
@@ -67,21 +69,24 @@ Returns:
 }
 ```
 
-### /get_by_name/<task_name>
-This route expects a GET with the task name in path variable
+### /get_all
+This route expects a HTTP GET
 
 Returns: 
-- HTTP 200 if task was found:
+- HTTP 200 if tasks were found:
 
 ```
-{
-  "name": "task_name",
-  "description": "task_description",
-  "status": "task_status"
-}
+[
+  {
+    "name": "task_name",
+    "description": "task_description",
+    "status": "task_status"
+  }
+  ...
+]
 ```
 
-- HTTP 404 if task was not found:
+- HTTP 404 is there are no tasks with a valid status:
 
 ```
 {
@@ -90,7 +95,7 @@ Returns:
 ```
 
 ### /get_by_status/<status>
-This route expects a GET with the status in path variable
+This route expects a HTTP GET with the status in path variable
 
 Returns: 
 - HTTP 200 if tasks were found:
@@ -122,24 +127,21 @@ Returns:
 }
 ```
 
-### /get_all
-This route expects a GET
+### /get_by_name/<task_name>
+This route expects a HTTP GET with the task name in path variable
 
 Returns: 
-- HTTP 200 if tasks were found:
+- HTTP 200 if task was found:
 
 ```
-[
-  {
-    "name": "task_name",
-    "description": "task_description",
-    "status": "task_status"
-  }
-  ...
-]
+{
+  "name": "task_name",
+  "description": "task_description",
+  "status": "task_status"
+}
 ```
 
-- HTTP 404 is there are no tasks with a valid status:
+- HTTP 404 if task was not found:
 
 ```
 {
@@ -148,4 +150,14 @@ Returns:
 ```
 
 ### /update/<task_name>
-This route expects a PUT with a Json that contains the new data 
+This route expects a HTTP PUT with the task name in path variable and a Json with the new data
+
+Json example:
+
+```
+{
+  "name": "task_name",
+  "description": "task_description",
+  "status": "task_status"
+} 
+```

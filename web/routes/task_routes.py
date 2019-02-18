@@ -136,7 +136,8 @@ def delete(task_name):
 
 
 def _is_request_json_a_task(request_json):
-    if 'name' not in request_json or 'description' not in request_json or 'status' not in request_json:
+    if 'name' not in request_json or 'description' not in request_json or 'status' not in request_json or \
+            request_json['name'] == '' or request_json['description'] == '' or request_json['status'] == '':
         return False
     return True
 
