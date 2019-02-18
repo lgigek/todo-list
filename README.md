@@ -17,6 +17,7 @@ All routes have the prefix `/task`. Example, to add a task, is necessary to make
 `/get_by_name/<task_name>`: HTTP route to get a task by its name
 `/get_by_status/<status>`: HTTP route to get tasks by its status
 `/get_all`: HTTP route to get all tasks 
+`/update/<task_name>`: HTTP route to update a task by its name
 
 ### /add
 This route expects a POST with a Json that contains the task data.
@@ -145,3 +146,6 @@ Returns:
   "Message": "Task not found"
 }
 ```
+
+### /update/<task_name>
+This route expects a PUT with a Json that contains the new data 

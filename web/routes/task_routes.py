@@ -121,6 +121,20 @@ def update(task_name):
                     'status': task_with_new_values.status}), 200
 
 
+@task.route('/delete/<string:task_name>', methods=['DELETE'])
+def delete(task_name):
+    logging.info(f'HTTP Request to delete a task with data: {request}')
+    logging.info(f'HTTP Request to delete task with name {task_name}')
+
+    if not task_service.is_registered(task_name):
+        logging.info('Task not found')
+        return jsonify({'Message': 'Task not found'}), 404
+
+    logging.info('Task deleted')
+    task_service.delete(task_name)
+    return jsonify({'Message': 'Task deleted'}), 200
+
+
 def _is_request_json_a_task(request_json):
     if 'name' not in request_json or 'description' not in request_json or 'status' not in request_json:
         return False

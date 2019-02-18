@@ -27,3 +27,7 @@ def update(task_name, task):
 
 def insert(task):
     tasks.insert_one(task.__dict__)
+
+
+def delete(task_name):
+    tasks.delete_one({'name': task_name})
