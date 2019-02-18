@@ -52,15 +52,13 @@ def get_by_status(status):
     logging.info(f'HTTP Request to get tasks by status with data: {request}')
     logging.info(f'Looking for tasks with status equal to "{status}"')
 
+    status = status.lower()
+
     if not _is_status_valid(status):
         logging.info(f'Invalid status value ({status})')
         return jsonify({'Message': "Invalid status. Please use 'to_do', 'doing' or 'done'"}), 400
 
     tasks_found = task_service.get_by_status(status)
-
-    if len(tasks_found) == 0:
-        logging.info('No tasks found')
-        return jsonify({'Message': 'Task not found'}), 404
 
     logging.info('Returning tasks')
     return_list = []
@@ -78,11 +76,6 @@ def get_all():
 
     tasks_found = task_service.get_all()
 
-    if len(tasks_found) == 0:
-        logging.info('No tasks found')
-        return jsonify({'Message': 'Task not found'}), 404
-
-    logging.info('Returning tasks')
     return_list = []
     for t in tasks_found:
         return_list.append({'name': t['name'], 'description': t['description'],
@@ -143,6 +136,6 @@ def _is_request_json_a_task(request_json):
 
 
 def _is_status_valid(status):
-    if status in Task.expected_status:
+    if status.lower() in Task.expected_status:
         return True
     return False
