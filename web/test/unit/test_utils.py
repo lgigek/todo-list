@@ -1,5 +1,8 @@
 class TestUtils:
-
-    valid_task = {'name': 'test_name',
-                  'description': 'test_description',
-                  'status': 'to_do'}
+    task_with_valid_body = {'name': 'test_name',
+                            'description': 'test_description',
+                            'status': 'to_do'}
+    task_with_invalid_body = {'this_is': 'invalid'}
+    task_with_invalid_status = {'name': 'test_name',
+                                'description': 'test_description',
+                                'status': 'this_is_invalid'}

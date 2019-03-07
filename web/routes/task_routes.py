@@ -26,7 +26,7 @@ def add():
 
     if not _is_status_valid(new_task.status):
         logging.info('Invalid status')
-        return jsonify({'Message': TaskMessages.invalid_status})
+        return jsonify({'Message': TaskMessages.invalid_status}), 400
 
     task_service.insert(new_task)
     logging.info('Task created')
