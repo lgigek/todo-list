@@ -15,7 +15,7 @@ def add():
     request_json = request.get_json()
     logging.info(f'HTTP Request to add a new task with JSON: {request_json}')
 
-    if not _is_request_json_a_task(request_json):
+    if not _is_a_task(request_json):
         logging.info('Incorrect parameters')
         return jsonify({'Message': TaskMessages.incorrect_parameters}), 400
 
@@ -79,8 +79,9 @@ def get_all():
 
     return_list = []
     for t in tasks_found:
-        return_list.append({'name': t['name'], 'description': t['description'],
-                            'status': t['status']})
+        if _is_a_task(t):
+            return_list.append({'name': t['name'], 'description': t['description'],
+                                'status': t['status']})
 
     return jsonify(return_list), 200
 
@@ -95,7 +96,7 @@ def update(task_name):
         logging.info('Task not found')
         return jsonify({'Message': TaskMessages.not_found}), 404
 
-    if not _is_request_json_a_task(request_json):
+    if not _is_a_task(request_json):
         logging.info('Incorrect parameters')
         return jsonify({'Message': TaskMessages.incorrect_parameters}), 400
 
@@ -128,9 +129,9 @@ def delete(task_name):
     return jsonify({'Message': TaskMessages.deleted}), 200
 
 
-def _is_request_json_a_task(request_json):
-    if 'name' not in request_json or 'description' not in request_json or 'status' not in request_json or \
-            request_json['name'] == '' or request_json['description'] == '' or request_json['status'] == '':
+def _is_a_task(obj):
+    if 'name' not in obj or 'description' not in obj or 'status' not in obj or \
+            obj['name'] == '' or obj['description'] == '' or obj['status'] == '':
         return False
     return True
 
