@@ -64,8 +64,9 @@ def get_by_status(status):
     logging.info('Returning tasks')
     return_list = []
     for t in tasks_found:
-        return_list.append({'name': t['name'], 'description': t['description'],
-                            'status': t['status']})
+        if _is_a_task(t):
+            return_list.append({'name': t['name'], 'description': t['description'],
+                                'status': t['status']})
 
     return jsonify(return_list), 200
 
