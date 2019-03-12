@@ -10,197 +10,22 @@ This application uses docker compose. It is necessary to run the following comma
 
 The application will be running on port 5000 (it can be changed in `.env` file)
 
+## Running tests
+To run tests, is necessary to execute "bash" the container and run the test there.
+
+- `docker ps`: to get the container id of the python application;
+
+- `docker exec -it <container_id> bash`: to execute "bash" on the python application container;
+
+- `nose2`: to run the tests;
+
 ## Routes
-All routes have the prefix `/task`. So, for example, if it is necessary to make a request to `/add`, is necessary to 
-make a request to route `/task/add`.
+Basically there are six routes, they are:
+- `/add`;
+- `/get_all`;
+- `/get_by_status/<status>`;
+- `/get_by_name/<task_name>`;
+- `/update/<task_name>`
+- `/delete/<task_name>`
 
-`/add`: route to create a new task
-`/get_all`: route to get all tasks 
-`/get_by_status/<status>`: route to get tasks by its status
-`/get_by_name/<task_name>`: route to get a task by its name
-`/update/<task_name>`: route to update a task by its name
-`/delete/<task_name>`: route do delete a task by its name
-
-### /add
-This route expects a HTTP POST with a Json that contains the task data.
-
-Json example:
-
-```
-{
-  "name": "task_name",
-  "description": "task_description",
-  "status": "task_status"
-} 
-```
-
-Returns:
-- HTTP 201 if task was created:
-
-```
-{
-  "Message": "Task created"
-}
-```
-
-- HTTP 400 if there is a task created with the same name:
-
-```
-{
-  "Message": "Duplicated task name"
-}
-```
- 
-- HTTP 400 if Json does not contains necessary fields or if fields are empty:
-
-```
-{
-  "Message": "Incorrect parameters"
-}
-```
-
-- HTTP 400 if "status" field id different from `to_do`, `doing` or `done`:
-
-```
-{
-  "Message": "Invalid value in 'status' field. Please use 'to_do', 'doing' or 'done'"
-}
-```
-
-### /get_all
-This route expects a HTTP GET
-
-Returns: 
-- HTTP 200 with the tasks in a list:
-
-```
-[
-  {
-    "name": "task_name",
-    "description": "task_description",
-    "status": "task_status"
-  }
-  ...
-]
-```
-
-### /get_by_status/<status>
-This route expects a HTTP GET with the status in path variable
-
-Returns: 
-- HTTP 200 with the tasks in a list:
-
-```
-[
-  {
-    "name": "task_name",
-    "description": "task_description",
-    "status": "task_status"
-  }
-  ...
-]
-```
-
-- HTTP 400 if status is invalid:
-
-```
-{
-  "Message": "Invalid status. Please use 'to_do', 'doing' or 'done'"
-}
-```
-
-### /get_by_name/<task_name>
-This route expects a HTTP GET with the task name in path variable
-
-Returns: 
-- HTTP 200 if task was found:
-
-```
-{
-  "name": "task_name",
-  "description": "task_description",
-  "status": "task_status"
-}
-```
-
-- HTTP 404 if task was not found:
-
-```
-{
-  "Message": "Task not found"
-}
-```
-
-### /update/<task_name>
-This route expects a HTTP PUT with the task name in path variable and a Json with the new data
-
-Json example:
-
-```
-{
-  "name": "task_name",
-  "description": "task_description",
-  "status": "task_status"
-} 
-```
-
-Returns:
-- HTTP 200 is task was updated:
-
-```
-{
- "Message": "Task updated"
-} 
-```
-
-- HTTP 400 if task was not found:
-
-```
-{
-  "Message": "Task not found"
-}
-```
-
-- HTTP 400 if Json does not contains necessary fields or if fields are empty:
-
-```
-{
-  "Message": "Incorrect parameters"
-}
-```
-
-- HTTP 400 if there is a task with the new name:
-
-```
-{
-  "Message": "Duplicated task name"
-}
-```
-
-- HTTP 400 if "status" field id different from `to_do`, `doing` or `done`:
-
-```
-{
-  "Message": "Invalid status. Please use 'to_do', 'doing' or 'done'"
-}
-```
-
-### /delete/<task_name>
-This route expects a HTTP DELETE with the task name in path variable
-
-Returns:
-- HTTP 200 if deleted:
-
-```
-{
-  "Message": "Task deleted"
-}
-```
-
-- HTTP 404 if task was not found:
-
-```
-{
-  "Message": "Task not found"
-}
-```
+You also can see the details of all routes in the [wiki page](https://github.com/lgigek/todo_list_python/wiki/Route-details).
