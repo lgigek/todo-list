@@ -3,7 +3,7 @@ from flaskr import app
 from unittest.mock import patch
 from test.unit.test_utils import TestUtils
 
-from routes.task_messages import TaskMessages
+from todo_list.routes.task_messages import TaskMessages
 
 
 class TestTaskRoute(TestCase):
@@ -24,8 +24,8 @@ class TestTaskRoute(TestCase):
     Add route tests
     """
 
-    @patch('services.task_service.insert')
-    @patch('services.task_service.is_registered')
+    @patch('todo_list.services.task_service.insert')
+    @patch('todo_list.services.task_service.is_registered')
     def test_add(self, mocked_task_service_is_registered, mocked_task_service_insert):
         """
         It should return 201 when a task is created
@@ -41,7 +41,7 @@ class TestTaskRoute(TestCase):
         self.assertEqual(response_json['Message'], TaskMessages.created)
         self.assertEqual(response.status_code, 201)
 
-    @patch('services.task_service.insert')
+    @patch('todo_list.services.task_service.insert')
     def test_add_invalid_body(self, mocked_task_service_insert):
         """
         It should return 400 when trying to add a task with invalid body
@@ -55,7 +55,7 @@ class TestTaskRoute(TestCase):
         self.assertEqual(response_json['Message'], TaskMessages.incorrect_parameters)
         self.assertEqual(response.status_code, 400)
 
-    @patch('services.task_service.insert')
+    @patch('todo_list.services.task_service.insert')
     def test_add_invalid_status(self, mocked_task_service_insert):
         """
         It should return 400 when trying to add a task with invalid status
@@ -69,8 +69,8 @@ class TestTaskRoute(TestCase):
         self.assertEqual(response_json['Message'], TaskMessages.invalid_status)
         self.assertEqual(response.status_code, 400)
 
-    @patch('services.task_service.insert')
-    @patch('services.task_service.is_registered')
+    @patch('todo_list.services.task_service.insert')
+    @patch('todo_list.services.task_service.is_registered')
     def test_add_duplicated(self, mocked_task_service_is_registered, mocked_task_service_insert):
         """
         It should return 400 when trying to add a task that already exists
@@ -86,8 +86,8 @@ class TestTaskRoute(TestCase):
         self.assertEqual(response_json['Message'], TaskMessages.duplicated)
         self.assertEqual(response.status_code, 400)
 
-    @patch('services.task_service.insert')
-    @patch('services.task_service.is_registered')
+    @patch('todo_list.services.task_service.insert')
+    @patch('todo_list.services.task_service.is_registered')
     def test_add_status_upper_case(self, mocked_task_service_is_registered, mocked_task_service_insert):
         """
         It should set status to lower case (.lower()) before saving the task
@@ -108,7 +108,7 @@ class TestTaskRoute(TestCase):
     Get by name route tests
     """
 
-    @patch('services.task_service.get_by_name')
+    @patch('todo_list.services.task_service.get_by_name')
     def test_get_by_name_existing(self, mocked_task_service_get_by_name):
         """
         It should return 200 if the task exists
@@ -125,7 +125,7 @@ class TestTaskRoute(TestCase):
         self.assertEqual(response_json['description'], TestUtils.task_with_valid_body['description'])
         self.assertEqual(response_json['status'], TestUtils.task_with_valid_body['status'])
 
-    @patch('services.task_service.get_by_name')
+    @patch('todo_list.services.task_service.get_by_name')
     def test_get_by_name_not_exists(self, mocked_task_service_get_by_name):
         """
         It should return 404 if the task does not exist
@@ -143,7 +143,7 @@ class TestTaskRoute(TestCase):
     Get by status route tests
     """
 
-    @patch('services.task_service.get_by_status')
+    @patch('todo_list.services.task_service.get_by_status')
     def test_get_by_status_existing(self, mocked_task_service_get_by_status):
         """
         It should return 200 with a list
@@ -159,7 +159,7 @@ class TestTaskRoute(TestCase):
         self.assertTrue(isinstance(response_json, list))
         self.assertEqual(response_json[0], TestUtils.task_with_valid_body)
 
-    @patch('services.task_service.get_by_status')
+    @patch('todo_list.services.task_service.get_by_status')
     def test_get_by_status_invalid(self, mocked_task_service_get_by_status):
         """
         It should return 400 if  the status is invalid
@@ -172,7 +172,7 @@ class TestTaskRoute(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response_json['Message'], TaskMessages.invalid_status)
 
-    @patch('services.task_service.get_by_status')
+    @patch('todo_list.services.task_service.get_by_status')
     def test_get_by_status_upper_case(self, mocked_task_service_get_by_status):
         """
         It should set status to lower case (.lower()) before returning tasks
@@ -185,7 +185,7 @@ class TestTaskRoute(TestCase):
         self.assertEqual(status_used_by_mock, 'to_do')
         self.assertEqual(response.status_code, 200)
 
-    @patch('services.task_service.get_by_status')
+    @patch('todo_list.services.task_service.get_by_status')
     def test_get_by_status_invalid_task(self, mocked_task_service_get_by_status):
         """
         It should not return something that is not a Task
@@ -204,7 +204,7 @@ class TestTaskRoute(TestCase):
     Get all route tests
     """
 
-    @patch('services.task_service.get_all')
+    @patch('todo_list.services.task_service.get_all')
     def test_get_all(self, mocked_task_service_get_all):
         """
         It should return 200 with a list
@@ -220,7 +220,7 @@ class TestTaskRoute(TestCase):
         self.assertTrue(isinstance(response_json, list))
         self.assertEqual(response_json[0], TestUtils.task_with_valid_body)
 
-    @patch('services.task_service.get_all')
+    @patch('todo_list.services.task_service.get_all')
     def test_get_all_invalid_task(self, mocked_task_service_get_all):
         """
         It should not return something that is not a Task
@@ -239,8 +239,8 @@ class TestTaskRoute(TestCase):
     Update route tests
     """
 
-    @patch('services.task_service.is_registered')
-    @patch('services.task_service.update')
+    @patch('todo_list.services.task_service.is_registered')
+    @patch('todo_list.services.task_service.update')
     def test_update(self, mocked_task_service_update, mocked_task_service_is_registered):
         """
         It should return 200 and update the task
@@ -256,8 +256,8 @@ class TestTaskRoute(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response_json['Message'], TaskMessages.updated)
 
-    @patch('services.task_service.is_registered')
-    @patch('services.task_service.update')
+    @patch('todo_list.services.task_service.is_registered')
+    @patch('todo_list.services.task_service.update')
     def test_update_not_found(self, mocked_task_service_update, mocked_task_service_is_registered):
         """
         It should return 404 if the task does not exist
@@ -273,8 +273,8 @@ class TestTaskRoute(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response_json['Message'], TaskMessages.not_found)
 
-    @patch('services.task_service.is_registered')
-    @patch('services.task_service.update')
+    @patch('todo_list.services.task_service.is_registered')
+    @patch('todo_list.services.task_service.update')
     def test_update_invalid_body(self, mocked_task_service_update, mocked_task_service_is_registered):
         """
         It should return 400 if the body is invalid
@@ -290,8 +290,8 @@ class TestTaskRoute(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response_json['Message'], TaskMessages.incorrect_parameters)
 
-    @patch('services.task_service.is_registered')
-    @patch('services.task_service.update')
+    @patch('todo_list.services.task_service.is_registered')
+    @patch('todo_list.services.task_service.update')
     def test_update_invalid_status(self, mocked_task_service_update, mocked_task_service_is_registered):
         """
         It should return 400 if the status is invalid
@@ -307,8 +307,8 @@ class TestTaskRoute(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response_json['Message'], TaskMessages.invalid_status)
 
-    @patch('services.task_service.is_registered')
-    @patch('services.task_service.update')
+    @patch('todo_list.services.task_service.is_registered')
+    @patch('todo_list.services.task_service.update')
     def test_update_duplicated(self, mocked_task_service_update, mocked_task_service_is_registered):
         """
         It should return 400 if there is a task with the new name
@@ -324,8 +324,8 @@ class TestTaskRoute(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response_json['Message'], TaskMessages.duplicated)
 
-    @patch('services.task_service.is_registered')
-    @patch('services.task_service.update')
+    @patch('todo_list.services.task_service.is_registered')
+    @patch('todo_list.services.task_service.update')
     def test_update_change_name(self, mocked_task_service_update, mocked_task_service_is_registered):
         """
         It should return 200 and update if there is not a task with the new name
@@ -343,8 +343,8 @@ class TestTaskRoute(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response_json['Message'], TaskMessages.updated)
 
-    @patch('services.task_service.is_registered')
-    @patch('services.task_service.update')
+    @patch('todo_list.services.task_service.is_registered')
+    @patch('todo_list.services.task_service.update')
     def test_update_upper_case(self, mocked_task_service_update, mocked_task_service_is_registered):
         """
         It should set status to lower case (.lower()) before updating the task
@@ -365,8 +365,8 @@ class TestTaskRoute(TestCase):
     Delete route tests
     """
 
-    @patch('services.task_service.delete')
-    @patch('services.task_service.is_registered')
+    @patch('todo_list.services.task_service.delete')
+    @patch('todo_list.services.task_service.is_registered')
     def test_delete(self, mocked_task_service_is_registered, mocked_task_service_delete):
         """
         It should return 200 and delete the task
@@ -381,8 +381,8 @@ class TestTaskRoute(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response_json['Message'], TaskMessages.deleted)
 
-    @patch('services.task_service.delete')
-    @patch('services.task_service.is_registered')
+    @patch('todo_list.services.task_service.delete')
+    @patch('todo_list.services.task_service.is_registered')
     def test_delete_not_found(self, mocked_task_service_is_registered, mocked_task_service_delete):
         """
         It should return 404 if the task does not exist

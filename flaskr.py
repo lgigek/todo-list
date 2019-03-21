@@ -1,6 +1,6 @@
 from flask import Flask
-from routes.task_routes import task
-from log import log_formatter
+from todo_list.routes.task_routes import task
+from todo_list.log import log_formatter
 
 app = Flask(__name__)
 

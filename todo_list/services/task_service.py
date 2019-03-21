@@ -1,4 +1,4 @@
-from dbs.mongo import tasks
+from todo_list.dbs.mongo import tasks
 
 
 def is_registered(task_name):

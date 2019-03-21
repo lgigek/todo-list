@@ -1,9 +1,9 @@
 from flask import request
 from flask import jsonify
 from flask import Blueprint
-from services import task_service
-from models.task import Task
-from routes.task_messages import TaskMessages
+from todo_list.services import task_service
+from todo_list.models.task import Task
+from todo_list.routes.task_messages import TaskMessages
 import logging
 
 task = Blueprint('task', __name__)
