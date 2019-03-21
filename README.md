@@ -1,4 +1,4 @@
-# todo_list_python
+# todo-list
 This is a CRUD to manage tasks.
 
 ## Running the application

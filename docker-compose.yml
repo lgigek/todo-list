@@ -2,7 +2,7 @@ version: '3'
 
 services:
   todo_list:
-    build: web
+    build: todo_list
     depends_on:
       - db
     env_file: .env
