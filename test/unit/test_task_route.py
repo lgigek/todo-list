@@ -1,5 +1,5 @@
 from unittest import TestCase
-from flaskr import app
+from todo_list.flask_app import create_app
 from unittest.mock import patch
 from test.unit.test_utils import TestUtils
 
@@ -9,9 +9,9 @@ from todo_list.routes.task_messages import TaskMessages
 class TestTaskRoute(TestCase):
 
     def setUp(self):
-        app.testing = True
-        self.app = app
-        self.test_client = app.test_client()
+        self.app = create_app()
+        self.app.testing = True
+        self.test_client = self.app.test_client()
 
         self.add_route = '/task/add'
         self.get_by_name_route = '/task/get_by_name/'
