@@ -1,6 +1,7 @@
 import logging
 import os
 from flask import jsonify
+from flask import request
 
 from todo_list.repositories import task_repository
 from todo_list.models.task import Task
@@ -9,7 +10,7 @@ from todo_list.services.task_messages import TaskMessages
 logger = logging.getLogger(os.environ.get('LOGGER_NAME'))
 
 
-def add(request):
+def add(req: request):
     """
     Adds a new task.
 
@@ -18,16 +19,17 @@ def add(request):
     It may return 400 if payload contains status with invalid value.
     If everything goes well, it returns 201.
     """
-    logger.info(f'HTTP Request to add a new task with data: {request}')
-    request_json = request.get_json()
-    logger.info(f'HTTP Request to add a new task with JSON: {request_json}')
+    logger.info(f'HTTP Request to add a new task with data: {req}')
+    request_payload = req.get_json()
+    logger.info(f'HTTP Request to add a new task with payload: {request_payload}')
 
     # Verifies if payload is valid
-    if not _is_a_task(request_json):
+    if not _is_a_task(request_payload):
         logger.info('Incorrect parameters')
         return jsonify({'Message': TaskMessages.incorrect_parameters}), 400
 
-    new_task = Task(request_json['name'], request_json['description'], request_json['status'].lower())
+    new_task: Task = Task(request_payload['name'], request_payload['description'],
+                          request_payload['status'].lower())
 
     # Verifies if there is a task with same name
     if task_repository.is_registered(new_task.name):
@@ -45,18 +47,18 @@ def add(request):
     return jsonify({'Message': TaskMessages.created}), 201
 
 
-def get_by_name(request, task_name):
+def get_by_name(req: request, task_name: str):
     """
     Returns a task based on its name.
 
     It may return 404 if task was not found.
     If the task was found, returns 200.
     """
-    logger.info(f'HTTP Request to get a task by name with data: {request}')
+    logger.info(f'HTTP Request to get a task by name with data: {req}')
     logger.info(f'Looking for a task with name "{task_name}"')
 
     # Gets a task by its name
-    task_found = task_repository.get_by_name(task_name)
+    task_found: Task = task_repository.get_by_name(task_name)
 
     # Verifies if task exists
     if task_found is None:
@@ -69,14 +71,14 @@ def get_by_name(request, task_name):
                     'status': task_found['status']}), 200
 
 
-def get_by_status(request, status):
+def get_by_status(req: request, status: str):
     """
     Returns a list of tasks based on its status.
 
     It may return 400 if the status is invalid
     If the status is valid, returns 200.
     """
-    logger.info(f'HTTP Request to get tasks by status with data: {request}')
+    logger.info(f'HTTP Request to get tasks by status with data: {req}')
     logger.info(f'Looking for tasks with status equal to "{status}"')
 
     status = status.lower()
@@ -87,7 +89,7 @@ def get_by_status(request, status):
         return jsonify({'Message': TaskMessages.invalid_status}), 400
 
     # Gets tasks by status
-    tasks_found = task_repository.get_by_status(status)
+    tasks_found: list = task_repository.get_by_status(status)
 
     # Creates list to return tasks
     logger.info('Returning tasks')
@@ -101,17 +103,17 @@ def get_by_status(request, status):
     return jsonify(return_list), 200
 
 
-def get_all(request):
+def get_all(req: request):
     """
     Returns a list with all the tasks.
 
     It always returns 200.
     """
-    logger.info(f'HTTP Request to get all tasks with data: {request}')
+    logger.info(f'HTTP Request to get all tasks with data: {req}')
     logger.info('Returning all tasks')
 
     # Gets all tasks
-    tasks_found = task_repository.get_all()
+    tasks_found: list = task_repository.get_all()
 
     # Creates list to return tasks
     return_list = []
@@ -124,7 +126,7 @@ def get_all(request):
     return jsonify(return_list), 200
 
 
-def update(request, task_name):
+def update(req: request, task_name: str):
     """
     Updates an existing task.
 
@@ -134,9 +136,9 @@ def update(request, task_name):
     It may return 400 if payload contains status with invalid value.
     If everything goes well, it returns 200.
     """
-    logger.info(f'HTTP Request to update a task with data: {request}')
-    request_json = request.get_json()
-    logger.info(f'HTTP Request to update task with name {task_name} with JSON: {request_json}')
+    logger.info(f'HTTP Request to update a task with data: {req}')
+    request_payload = req.get_json()
+    logger.info(f'HTTP Request to update task with name {task_name} with payload: {request_payload}')
 
     # Verifies if task exists
     if not task_repository.is_registered(task_name):
@@ -144,11 +146,12 @@ def update(request, task_name):
         return jsonify({'Message': TaskMessages.not_found}), 404
 
     # Verifies if payload is valid
-    if not _is_a_task(request_json):
+    if not _is_a_task(request_payload):
         logger.info('Incorrect parameters')
         return jsonify({'Message': TaskMessages.incorrect_parameters}), 400
 
-    task_with_new_values = Task(request_json['name'], request_json['description'], request_json['status'].lower())
+    task_with_new_values: Task = Task(request_payload['name'], request_payload['description'],
+                                      request_payload['status'].lower())
 
     # Verifies if there is a task with same name
     if task_repository.is_registered(task_with_new_values.name) and task_with_new_values.name != task_name:
@@ -166,14 +169,14 @@ def update(request, task_name):
     return jsonify({'Message': TaskMessages.updated}), 200
 
 
-def delete(request, task_name):
+def delete(req: request, task_name: str):
     """
     Deletes a task.
 
     It may return 404 if task was not found.
     It returns 200 if task was delete.
     """
-    logger.info(f'HTTP Request to delete a task with data: {request}')
+    logger.info(f'HTTP Request to delete a task with data: {req}')
     logger.info(f'HTTP Request to delete task with name {task_name}')
 
     if not task_repository.is_registered(task_name):
@@ -193,13 +196,14 @@ def _is_a_task(obj):
 
     If returns True if "obj" contains all fields and returns "False" if does not.
     """
+
     if 'name' not in obj or 'description' not in obj or 'status' not in obj or \
             obj['name'] == '' or obj['description'] == '' or obj['status'] == '':
         return False
     return True
 
 
-def _is_status_valid(status):
+def _is_status_valid(status: str):
     """
     Verifies if the parameter "status" is valid.
 
@@ -207,6 +211,7 @@ def _is_status_valid(status):
 
     It returns True if "status" is valid and return False if does not.
     """
+
     if status.lower() in Task.expected_status:
         return True
     return False
