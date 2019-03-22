@@ -6,22 +6,33 @@ from test.unit import test_utils
 from todo_list.services import task_messages
 from todo_list.routes import urls
 
+# Sets routes values for tests
+route_prefix = '/task'
+
+add_route = route_prefix + urls.add_task
+get_by_name_route = route_prefix + urls.get_task_by_name + '/'
+get_by_status_route = route_prefix + urls.get_task_by_status + '/'
+get_all_route = route_prefix + urls.get_all_tasks
+update_route = route_prefix + urls.update_task + '/'
+delete_route = route_prefix + urls.delete_task + '/'
+
 
 class TestTaskRoute(TestCase):
+    """
+    This class contains tests to guarantee the behavior of task's routes
+    """
 
     def setUp(self):
+        """
+        Runs before tests to setup the necessary configs
+        """
+
+        # Creates flask app
         self.app = create_app()
         self.app.testing = True
+
+        # Gets flask "test_client"
         self.test_client = self.app.test_client()
-
-        route_prefix = '/task'
-
-        self.add_route = route_prefix + urls.add_task
-        self.get_by_name_route = route_prefix + urls.get_task_by_name + '/'
-        self.get_by_status_route = route_prefix + urls.get_task_by_status + '/'
-        self.get_all_route = route_prefix + urls.get_all_tasks
-        self.update_route = route_prefix + urls.update_task + '/'
-        self.delete_route = route_prefix + urls.delete_task + '/'
 
     """
     Add route tests
@@ -36,7 +47,7 @@ class TestTaskRoute(TestCase):
 
         mocked_task_repository_is_registered.return_value = False
 
-        response = self.test_client.post(self.add_route,
+        response = self.test_client.post(add_route,
                                          json=test_utils.task_with_valid_body)
         response_json = response.get_json()
 
@@ -50,7 +61,7 @@ class TestTaskRoute(TestCase):
         It should return 400 when trying to add a task with invalid body
         """
 
-        response = self.test_client.post(self.add_route,
+        response = self.test_client.post(add_route,
                                          json=test_utils.task_with_invalid_body)
         response_json = response.get_json()
 
@@ -64,7 +75,7 @@ class TestTaskRoute(TestCase):
         It should return 400 when trying to add a task with invalid status
         """
 
-        response = self.test_client.post(self.add_route,
+        response = self.test_client.post(add_route,
                                          json=test_utils.task_with_invalid_status)
         response_json = response.get_json()
 
@@ -81,7 +92,7 @@ class TestTaskRoute(TestCase):
 
         mocked_task_repository_is_registered.return_value = True
 
-        response = self.test_client.post(self.add_route,
+        response = self.test_client.post(add_route,
                                          json=test_utils.task_with_valid_body)
         response_json = response.get_json()
 
@@ -98,7 +109,7 @@ class TestTaskRoute(TestCase):
 
         mocked_task_repository_is_registered.return_value = False
 
-        response = self.test_client.post(self.add_route,
+        response = self.test_client.post(add_route,
                                          json=test_utils.task_with_valid_body)
 
         task_used_by_mock = mocked_task_repository_insert.call_args[0][0]
@@ -119,7 +130,7 @@ class TestTaskRoute(TestCase):
 
         mocked_task_repository_get_by_name.return_value = test_utils.task_with_valid_body
 
-        response = self.test_client.get(self.get_by_name_route + 'it_exists')
+        response = self.test_client.get(get_by_name_route + 'it_exists')
         response_json = response.get_json()
 
         self.assertTrue(mocked_task_repository_get_by_name.called)
@@ -135,7 +146,7 @@ class TestTaskRoute(TestCase):
         """
         mocked_task_repository_get_by_name.return_value = None
 
-        response = self.test_client.get(self.get_by_name_route + 'it_does_not_exist')
+        response = self.test_client.get(get_by_name_route + 'it_does_not_exist')
         response_json = response.get_json()
 
         self.assertTrue(mocked_task_repository_get_by_name.called)
@@ -154,7 +165,7 @@ class TestTaskRoute(TestCase):
 
         mocked_task_repository_get_by_status.return_value = [test_utils.task_with_valid_body]
 
-        response = self.test_client.get(self.get_by_status_route + 'to_do')
+        response = self.test_client.get(get_by_status_route + 'to_do')
         response_json = response.get_json()
 
         self.assertTrue(mocked_task_repository_get_by_status.called)
@@ -168,7 +179,7 @@ class TestTaskRoute(TestCase):
         It should return 400 if  the status is invalid
         """
 
-        response = self.test_client.get(self.get_by_status_route + 'this_is_invalid')
+        response = self.test_client.get(get_by_status_route + 'this_is_invalid')
         response_json = response.get_json()
 
         self.assertFalse(mocked_task_repository_get_by_status.called)
@@ -181,7 +192,7 @@ class TestTaskRoute(TestCase):
         It should set status to lower case (.lower()) before returning tasks
         """
 
-        response = self.test_client.get(self.get_by_status_route + 'TO_DO')
+        response = self.test_client.get(get_by_status_route + 'TO_DO')
 
         status_used_by_mock = mocked_task_repository_get_by_status.call_args[0][0]
 
@@ -197,7 +208,7 @@ class TestTaskRoute(TestCase):
         mocked_task_repository_get_by_status.return_value = [test_utils.task_with_valid_body,
                                                              test_utils.task_with_invalid_body]
 
-        response = self.test_client.get(self.get_by_status_route + 'to_do')
+        response = self.test_client.get(get_by_status_route + 'to_do')
         response_json = response.get_json()
 
         self.assertEqual(len(response_json), 1)
@@ -215,7 +226,7 @@ class TestTaskRoute(TestCase):
 
         mocked_task_repository_get_all.return_value = [test_utils.task_with_valid_body]
 
-        response = self.test_client.get(self.get_all_route)
+        response = self.test_client.get(get_all_route)
         response_json = response.get_json()
 
         self.assertTrue(mocked_task_repository_get_all.called)
@@ -232,7 +243,7 @@ class TestTaskRoute(TestCase):
         mocked_task_repository_get_all.return_value = [test_utils.task_with_valid_body,
                                                        test_utils.task_with_invalid_body]
 
-        response = self.test_client.get(self.get_all_route)
+        response = self.test_client.get(get_all_route)
         response_json = response.get_json()
 
         self.assertEqual(len(response_json), 1)
@@ -251,7 +262,7 @@ class TestTaskRoute(TestCase):
 
         mocked_task_repository_is_registered.return_value = True
 
-        response = self.test_client.put(self.update_route + test_utils.task_with_valid_body['name'],
+        response = self.test_client.put(update_route + test_utils.task_with_valid_body['name'],
                                         json=test_utils.task_with_valid_body)
         response_json = response.get_json()
 
@@ -268,7 +279,7 @@ class TestTaskRoute(TestCase):
 
         mocked_task_repository_is_registered.return_value = False
 
-        response = self.test_client.put(self.update_route + 'i_dont_exist',
+        response = self.test_client.put(update_route + 'i_dont_exist',
                                         json=test_utils.task_with_valid_body)
         response_json = response.get_json()
 
@@ -285,7 +296,7 @@ class TestTaskRoute(TestCase):
 
         mocked_task_repository_is_registered.return_value = True
 
-        response = self.test_client.put(self.update_route + 'i_have_an_invalid_body',
+        response = self.test_client.put(update_route + 'i_have_an_invalid_body',
                                         json=test_utils.task_with_invalid_body)
         response_json = response.get_json()
 
@@ -302,7 +313,7 @@ class TestTaskRoute(TestCase):
 
         mocked_task_repository_is_registered.return_value = True
 
-        response = self.test_client.put(self.update_route + test_utils.task_with_invalid_status['name'],
+        response = self.test_client.put(update_route + test_utils.task_with_invalid_status['name'],
                                         json=test_utils.task_with_invalid_status)
         response_json = response.get_json()
 
@@ -319,7 +330,7 @@ class TestTaskRoute(TestCase):
 
         mocked_task_repository_is_registered.return_value = True
 
-        response = self.test_client.put(self.update_route + test_utils.task_with_valid_body['name'] + '_new',
+        response = self.test_client.put(update_route + test_utils.task_with_valid_body['name'] + '_new',
                                         json=test_utils.task_with_valid_body)
         response_json = response.get_json()
 
@@ -338,7 +349,7 @@ class TestTaskRoute(TestCase):
         # Returns True when verifying if 'old_name' exists and returns False when verifying if new name exists
         mocked_task_repository_is_registered.side_effect = [True, False]
 
-        response = self.test_client.put(self.update_route + 'old_name',
+        response = self.test_client.put(update_route + 'old_name',
                                         json=test_utils.task_with_valid_body)
         response_json = response.get_json()
 
@@ -355,7 +366,7 @@ class TestTaskRoute(TestCase):
 
         mocked_task_repository_is_registered.return_value = True
 
-        response = self.test_client.put(self.update_route + test_utils.task_with_valid_body['name'],
+        response = self.test_client.put(update_route + test_utils.task_with_valid_body['name'],
                                         json=test_utils.task_with_status_upper_case)
 
         task_used_by_mock = mocked_task_repository_update.call_args[0][1]
@@ -377,7 +388,7 @@ class TestTaskRoute(TestCase):
 
         mocked_task_repository_is_registered.return_value = True
 
-        response = self.test_client.delete(self.delete_route + 'test_name')
+        response = self.test_client.delete(delete_route + 'test_name')
         response_json = response.get_json()
 
         self.assertTrue(mocked_task_repository_delete.called)
@@ -393,7 +404,7 @@ class TestTaskRoute(TestCase):
 
         mocked_task_repository_is_registered.return_value = False
 
-        response = self.test_client.delete(self.delete_route + 'test_task')
+        response = self.test_client.delete(delete_route + 'test_task')
         response_json = response.get_json()
 
         self.assertFalse(mocked_task_repository_delete.called)
