@@ -7,6 +7,10 @@ from todo_list.repositories import task_repository
 from todo_list.models.task import Task
 from todo_list.services import task_messages
 
+"""
+This module contains the business rule for manipulating tasks
+"""
+
 logger = logging.getLogger(os.environ.get('LOGGER_NAME'))
 
 

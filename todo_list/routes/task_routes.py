@@ -4,6 +4,10 @@ from flask import Blueprint
 from todo_list.services import task_service
 from todo_list.routes import urls
 
+"""
+This module maintains the flask's routes 
+"""
+
 task = Blueprint('task', __name__)
 
 

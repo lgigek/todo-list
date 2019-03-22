@@ -1,3 +1,7 @@
+"""
+This module centralize data from tasks that are used tests
+"""
+
 task_with_valid_body = {'name': 'test_name',
                         'description': 'test_description',
                         'status': 'to_do'}

@@ -1,5 +1,9 @@
 from todo_list.dbs.mongo import tasks
 
+"""
+This module manipulates the instance of a collection from MongoDb
+"""
+
 
 def is_registered(task_name):
     """ Verifies if there is a task with the informed name """
