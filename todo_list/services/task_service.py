@@ -4,7 +4,7 @@ import logging
 from todo_list.log.formatter import logger_name
 from todo_list.repositories import task_repository
 from todo_list.models.task import Task
-from todo_list.routes.task_messages import TaskMessages
+from todo_list.services.task_messages import TaskMessages
 
 logger = logging.getLogger(logger_name)
 

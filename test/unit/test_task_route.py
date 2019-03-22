@@ -3,7 +3,7 @@ from todo_list.flask_app import create_app
 from unittest.mock import patch
 from test.unit.test_utils import TestUtils
 
-from todo_list.routes.task_messages import TaskMessages
+from todo_list.services.task_messages import TaskMessages
 from todo_list.routes import urls
 
 
