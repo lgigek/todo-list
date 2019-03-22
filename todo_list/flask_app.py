@@ -1,4 +1,5 @@
 import logging
+import os
 from flask import Flask
 
 from todo_list.routes.task_routes import task
@@ -22,7 +23,7 @@ def create_app():
 
 def setup_log():
     """ Sets a pattern to 'logger' log """
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger(os.environ.get('LOGGER_NAME'))
 
     my_formatter = logging.Formatter("%(asctime)s %(levelname)7s "
                                      "[%(filename)s:%(lineno)s - %(funcName)20s()] %(message)s")

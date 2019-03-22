@@ -1,12 +1,12 @@
-from flask import jsonify
 import logging
+import os
+from flask import jsonify
 
-from todo_list.log.formatter import logger_name
 from todo_list.repositories import task_repository
 from todo_list.models.task import Task
 from todo_list.services.task_messages import TaskMessages
 
-logger = logging.getLogger(logger_name)
+logger = logging.getLogger(os.environ.get('LOGGER_NAME'))
 
 
 def add(request):
