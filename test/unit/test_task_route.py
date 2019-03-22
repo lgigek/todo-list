@@ -4,6 +4,7 @@ from unittest.mock import patch
 from test.unit.test_utils import TestUtils
 
 from todo_list.routes.task_messages import TaskMessages
+from todo_list.routes import urls
 
 
 class TestTaskRoute(TestCase):
@@ -13,12 +14,14 @@ class TestTaskRoute(TestCase):
         self.app.testing = True
         self.test_client = self.app.test_client()
 
-        self.add_route = '/task/add'
-        self.get_by_name_route = '/task/get_by_name/'
-        self.get_by_status_route = '/task/get_by_status/'
-        self.get_all_route = '/task/get_all'
-        self.update_route = '/task/update/'
-        self.delete_route = '/task/delete/'
+        route_prefix = '/task'
+
+        self.add_route = route_prefix + urls.add_task
+        self.get_by_name_route = route_prefix + urls.get_task_by_name + '/'
+        self.get_by_status_route = route_prefix + urls.get_task_by_status + '/'
+        self.get_all_route = route_prefix + urls.get_all_tasks
+        self.update_route = route_prefix + urls.update_task + '/'
+        self.delete_route = route_prefix + urls.delete_task + '/'
 
     """
     Add route tests
@@ -192,7 +195,7 @@ class TestTaskRoute(TestCase):
         """
 
         mocked_task_repository_get_by_status.return_value = [TestUtils.task_with_valid_body,
-                                                          TestUtils.task_with_invalid_body]
+                                                             TestUtils.task_with_invalid_body]
 
         response = self.test_client.get(self.get_by_status_route + 'to_do')
         response_json = response.get_json()
@@ -227,7 +230,7 @@ class TestTaskRoute(TestCase):
         """
 
         mocked_task_repository_get_all.return_value = [TestUtils.task_with_valid_body,
-                                                    TestUtils.task_with_invalid_body]
+                                                       TestUtils.task_with_invalid_body]
 
         response = self.test_client.get(self.get_all_route)
         response_json = response.get_json()
