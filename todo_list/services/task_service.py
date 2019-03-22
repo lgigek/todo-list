@@ -5,7 +5,7 @@ from flask import request
 
 from todo_list.repositories import task_repository
 from todo_list.models.task import Task
-from todo_list.services.task_messages import TaskMessages
+from todo_list.services import task_messages
 
 logger = logging.getLogger(os.environ.get('LOGGER_NAME'))
 
@@ -26,7 +26,7 @@ def add(req: request):
     # Verifies if payload is valid
     if not _is_a_task(request_payload):
         logger.info('Incorrect parameters')
-        return jsonify({'Message': TaskMessages.incorrect_parameters}), 400
+        return jsonify({'Message': task_messages.incorrect_parameters}), 400
 
     new_task: Task = Task(request_payload['name'], request_payload['description'],
                           request_payload['status'].lower())
@@ -34,17 +34,17 @@ def add(req: request):
     # Verifies if there is a task with same name
     if task_repository.is_registered(new_task.name):
         logger.info('Duplicated task name')
-        return jsonify({'Message': TaskMessages.duplicated}), 400
+        return jsonify({'Message': task_messages.duplicated}), 400
 
     # Verifies if payload "status" is valid
     if not _is_status_valid(new_task.status):
         logger.info('Invalid status')
-        return jsonify({'Message': TaskMessages.invalid_status}), 400
+        return jsonify({'Message': task_messages.invalid_status}), 400
 
     # Creates the task!
     task_repository.insert(new_task)
     logger.info('Task created')
-    return jsonify({'Message': TaskMessages.created}), 201
+    return jsonify({'Message': task_messages.created}), 201
 
 
 def get_by_name(req: request, task_name: str):
@@ -63,7 +63,7 @@ def get_by_name(req: request, task_name: str):
     # Verifies if task exists
     if task_found is None:
         logger.info('Task not found')
-        return jsonify({'Message': TaskMessages.not_found}), 404
+        return jsonify({'Message': task_messages.not_found}), 404
 
     # Returns the task!
     logger.info('Returning task')
@@ -86,7 +86,7 @@ def get_by_status(req: request, status: str):
     # Verifies if status is valid
     if not _is_status_valid(status):
         logger.info('Invalid status')
-        return jsonify({'Message': TaskMessages.invalid_status}), 400
+        return jsonify({'Message': task_messages.invalid_status}), 400
 
     # Gets tasks by status
     tasks_found: list = task_repository.get_by_status(status)
@@ -143,12 +143,12 @@ def update(req: request, task_name: str):
     # Verifies if task exists
     if not task_repository.is_registered(task_name):
         logger.info('Task not found')
-        return jsonify({'Message': TaskMessages.not_found}), 404
+        return jsonify({'Message': task_messages.not_found}), 404
 
     # Verifies if payload is valid
     if not _is_a_task(request_payload):
         logger.info('Incorrect parameters')
-        return jsonify({'Message': TaskMessages.incorrect_parameters}), 400
+        return jsonify({'Message': task_messages.incorrect_parameters}), 400
 
     task_with_new_values: Task = Task(request_payload['name'], request_payload['description'],
                                       request_payload['status'].lower())
@@ -156,17 +156,17 @@ def update(req: request, task_name: str):
     # Verifies if there is a task with same name
     if task_repository.is_registered(task_with_new_values.name) and task_with_new_values.name != task_name:
         logger.info('Duplicated task name')
-        return jsonify({'Message': TaskMessages.duplicated}), 400
+        return jsonify({'Message': task_messages.duplicated}), 400
 
     # Verifies if payload "status" is valid
     if not _is_status_valid(task_with_new_values.status):
         logger.info('Invalid status')
-        return jsonify({'Message': TaskMessages.invalid_status}), 400
+        return jsonify({'Message': task_messages.invalid_status}), 400
 
     # Updates the task!
     task_repository.update(task_name, task_with_new_values)
     logger.info('Task updated')
-    return jsonify({'Message': TaskMessages.updated}), 200
+    return jsonify({'Message': task_messages.updated}), 200
 
 
 def delete(req: request, task_name: str):
@@ -181,11 +181,11 @@ def delete(req: request, task_name: str):
 
     if not task_repository.is_registered(task_name):
         logger.info('Task not found')
-        return jsonify({'Message': TaskMessages.not_found}), 404
+        return jsonify({'Message': task_messages.not_found}), 404
 
     logger.info('Task deleted')
     task_repository.delete(task_name)
-    return jsonify({'Message': TaskMessages.deleted}), 200
+    return jsonify({'Message': task_messages.deleted}), 200
 
 
 def _is_a_task(obj):

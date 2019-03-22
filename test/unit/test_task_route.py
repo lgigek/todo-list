@@ -3,7 +3,7 @@ from todo_list.flask_app import create_app
 from unittest.mock import patch
 from test.unit.test_utils import TestUtils
 
-from todo_list.services.task_messages import TaskMessages
+from todo_list.services import task_messages
 from todo_list.routes import urls
 
 
@@ -41,7 +41,7 @@ class TestTaskRoute(TestCase):
         response_json = response.get_json()
 
         self.assertTrue(mocked_task_repository_insert.called)
-        self.assertEqual(response_json['Message'], TaskMessages.created)
+        self.assertEqual(response_json['Message'], task_messages.created)
         self.assertEqual(response.status_code, 201)
 
     @patch('todo_list.repositories.task_repository.insert')
@@ -55,7 +55,7 @@ class TestTaskRoute(TestCase):
         response_json = response.get_json()
 
         self.assertFalse(mocked_task_repository_insert.called)
-        self.assertEqual(response_json['Message'], TaskMessages.incorrect_parameters)
+        self.assertEqual(response_json['Message'], task_messages.incorrect_parameters)
         self.assertEqual(response.status_code, 400)
 
     @patch('todo_list.repositories.task_repository.insert')
@@ -69,7 +69,7 @@ class TestTaskRoute(TestCase):
         response_json = response.get_json()
 
         self.assertFalse(mocked_task_repository_insert.called)
-        self.assertEqual(response_json['Message'], TaskMessages.invalid_status)
+        self.assertEqual(response_json['Message'], task_messages.invalid_status)
         self.assertEqual(response.status_code, 400)
 
     @patch('todo_list.repositories.task_repository.insert')
@@ -86,7 +86,7 @@ class TestTaskRoute(TestCase):
         response_json = response.get_json()
 
         self.assertFalse(mocked_task_repository_insert.called)
-        self.assertEqual(response_json['Message'], TaskMessages.duplicated)
+        self.assertEqual(response_json['Message'], task_messages.duplicated)
         self.assertEqual(response.status_code, 400)
 
     @patch('todo_list.repositories.task_repository.insert')
@@ -140,7 +140,7 @@ class TestTaskRoute(TestCase):
 
         self.assertTrue(mocked_task_repository_get_by_name.called)
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response_json['Message'], TaskMessages.not_found)
+        self.assertEqual(response_json['Message'], task_messages.not_found)
 
     """
     Get by status route tests
@@ -173,7 +173,7 @@ class TestTaskRoute(TestCase):
 
         self.assertFalse(mocked_task_repository_get_by_status.called)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response_json['Message'], TaskMessages.invalid_status)
+        self.assertEqual(response_json['Message'], task_messages.invalid_status)
 
     @patch('todo_list.repositories.task_repository.get_by_status')
     def test_get_by_status_upper_case(self, mocked_task_repository_get_by_status):
@@ -257,7 +257,7 @@ class TestTaskRoute(TestCase):
 
         self.assertTrue(mocked_task_repository_update.called)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response_json['Message'], TaskMessages.updated)
+        self.assertEqual(response_json['Message'], task_messages.updated)
 
     @patch('todo_list.repositories.task_repository.is_registered')
     @patch('todo_list.repositories.task_repository.update')
@@ -274,7 +274,7 @@ class TestTaskRoute(TestCase):
 
         self.assertFalse(mocked_task_repository_update.called)
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response_json['Message'], TaskMessages.not_found)
+        self.assertEqual(response_json['Message'], task_messages.not_found)
 
     @patch('todo_list.repositories.task_repository.is_registered')
     @patch('todo_list.repositories.task_repository.update')
@@ -291,7 +291,7 @@ class TestTaskRoute(TestCase):
 
         self.assertFalse(mocked_task_repository_update.called)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response_json['Message'], TaskMessages.incorrect_parameters)
+        self.assertEqual(response_json['Message'], task_messages.incorrect_parameters)
 
     @patch('todo_list.repositories.task_repository.is_registered')
     @patch('todo_list.repositories.task_repository.update')
@@ -308,7 +308,7 @@ class TestTaskRoute(TestCase):
 
         self.assertFalse(mocked_task_repository_update.called)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response_json['Message'], TaskMessages.invalid_status)
+        self.assertEqual(response_json['Message'], task_messages.invalid_status)
 
     @patch('todo_list.repositories.task_repository.is_registered')
     @patch('todo_list.repositories.task_repository.update')
@@ -325,7 +325,7 @@ class TestTaskRoute(TestCase):
 
         self.assertFalse(mocked_task_repository_update.called)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response_json['Message'], TaskMessages.duplicated)
+        self.assertEqual(response_json['Message'], task_messages.duplicated)
 
     @patch('todo_list.repositories.task_repository.is_registered')
     @patch('todo_list.repositories.task_repository.update')
@@ -344,7 +344,7 @@ class TestTaskRoute(TestCase):
 
         self.assertTrue(mocked_task_repository_update.called)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response_json['Message'], TaskMessages.updated)
+        self.assertEqual(response_json['Message'], task_messages.updated)
 
     @patch('todo_list.repositories.task_repository.is_registered')
     @patch('todo_list.repositories.task_repository.update')
@@ -382,7 +382,7 @@ class TestTaskRoute(TestCase):
 
         self.assertTrue(mocked_task_repository_delete.called)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response_json['Message'], TaskMessages.deleted)
+        self.assertEqual(response_json['Message'], task_messages.deleted)
 
     @patch('todo_list.repositories.task_repository.delete')
     @patch('todo_list.repositories.task_repository.is_registered')
@@ -398,4 +398,4 @@ class TestTaskRoute(TestCase):
 
         self.assertFalse(mocked_task_repository_delete.called)
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response_json['Message'], TaskMessages.not_found)
+        self.assertEqual(response_json['Message'], task_messages.not_found)
