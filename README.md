@@ -29,3 +29,5 @@ Basically there are six routes, they are:
 - `/delete/<task_name>`
 
 You also can see the details of all routes in the [wiki page](https://github.com/lgigek/todo_list_python/wiki/Route-details).
+
+In addition, it is possible to import `insomnia.json` (located on `docs/`) to [Insomnia](https://insomnia.rest/).
