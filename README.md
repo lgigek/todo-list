@@ -10,14 +10,15 @@ This application uses docker compose. It is necessary to run the following comma
 
 The application will be running on port 5000 (it can be changed in `.env` file)
 
-## Running tests
-To run tests, is necessary to execute "bash" the container and run the test there.
+## Setting your local environment up
+As this project uses [pipenv](https://github.com/pypa/pipenv), it is necessary to have it installed on your local machine.
 
-- `docker ps`: to get the container id of the python application;
+After installing pipenv, run `pipenv shell` to access no your virtual environment.
 
-- `docker exec -it <container_id> bash`: to execute "bash" on the python application container;
+Then, install the dev dependencies by running this command: `pipenv install --dev --ignore-pipfile`.
 
-- `nose2`: to run the tests;
+### Running the tests
+On your local environment, simply run `nose2`.
 
 ## Routes
 Basically there are six routes, they are:

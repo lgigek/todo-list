@@ -70,10 +70,13 @@ class TestTaskRoute(TestCase):
         self.assertEqual(response.status_code, 400)
 
     @patch('todo_list.repositories.task_repository.insert')
-    def test_add_invalid_status(self, mocked_task_repository_insert):
+    @patch('todo_list.repositories.task_repository.is_registered')
+    def test_add_invalid_status(self, mocked_task_repository_is_registered, mocked_task_repository_insert):
         """
         It should return 400 when trying to add a task with invalid status
         """
+
+        mocked_task_repository_is_registered.return_value = False
 
         response = self.test_client.post(add_route,
                                          json=test_utils.task_with_invalid_status)

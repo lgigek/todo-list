@@ -1,4 +1,0 @@
-pymongo == 3.7.2
-flask == 1.0.2
-gunicorn == 19.7.0
-nose2 == 0.8.0
